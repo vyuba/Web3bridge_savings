@@ -48,29 +48,6 @@ export function simulateWeeklyProgress() {
     });
 }
 
-// Withdraw a student: remove from group, update total, and add from waitingList
-export function withdrawStudent(tier, studentId) {
-    console.log("Withdrawing student:", studentId);
-    const group = groups[tier as keyof typeof groups];
-    console.log("Group:", group);
-    if (!group) return false;
-    const idx = group.members.findIndex(m => m.id === studentId);
-    console.log("Index:", idx);
-    if (idx === -1) return false;
-    group.members.splice(idx, 1);
-    // Add from waiting list if available
-    // if (group.waitingList.length > 0) {
-    //     const newMember = group.waitingList.shift();
-    //     if (newMember) {
-    //         group.members.push({
-    //             ...newMember,
-    //             initialDeposit: newMember.balance
-    //         });
-    //     }
-    // }
-    group.totalSavings = group.members.reduce((sum, m) => sum + m.balance, 0);
-    return true;
-}
 
 // Add a student to waiting list
 export function addToWaitingList(tier, student) {

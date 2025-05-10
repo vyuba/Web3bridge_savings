@@ -50,10 +50,10 @@ export function simulateWeeklyProgress() {
 
 
 // Add a student to waiting list
-export function addToWaitingList(tier, student) {
+export function addToWaitingList(tier: string, student: { id: number; name: string; balance: number; initialDeposit?: number }) {
     const group = groups[tier as keyof typeof groups];
     if (!group) return false;
-    group.waitingList.push(student);
+    group.waitingList.push({ ...student, initialDeposit: student.balance });
     return true;
 }
 // ... existing code ...

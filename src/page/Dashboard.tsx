@@ -1,14 +1,34 @@
 
 
 // import React from "react";
-import { groups } from "../data/mockData";
+import { groups, withdrawStudent } from "../data/mockData";
 import type { UserData } from "../App";
+import { useEffect } from "react";
 
 const Dashboard = ({ isLogged, userData }: {
     isLogged: boolean,
     userData: UserData | null
 }) => {
     if (!isLogged) return null;
+
+    // Add the user to the appropriate group
+    useEffect(() => {
+        if (!userData) return;
+        const group = groups[`Tier${userData.savingsPlan.tier}` as keyof typeof groups];
+        if (!group) return;
+        if (group.members.some((member: { name: string }) => member.name === userData.username)) return;
+        group.members.push({
+            id: (Number(Math.random().toFixed(0)) * 1) + groups.Tier1.members.length + 5,
+            name: userData.username,
+            initialDeposit: userData.savingsPlan.balance,
+            balance: userData.savingsPlan.balance,
+        });
+    }, [userData]);
+
+    const id = userData ? groups[`Tier${userData.savingsPlan.tier}` as keyof typeof groups].members.find((member: { name: string }) => {
+        if (!userData) return;
+        return member.name === userData.username;
+    })?.id : null;
 
     return (
         <div className="p-6">
@@ -22,6 +42,7 @@ const Dashboard = ({ isLogged, userData }: {
                 <p className="text-gray-300">
                     Percentage: {userData?.savingsPlan.percentage}%
                 </p>
+                <button className="border cursor-pointer hover:bg-white/80 p-2 bg-white text-black capitalize" onClick={() => userData && withdrawStudent(`Tier${userData.savingsPlan.tier}`, id)} >withdraw</button>
             </div>
             {Object.entries(groups).map(([tier, group]) => (
                 <div key={tier} className="mb-8">
